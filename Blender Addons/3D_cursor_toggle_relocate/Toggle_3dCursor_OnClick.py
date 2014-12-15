@@ -33,7 +33,9 @@ import bpy
 class VIEW3D_PT_view3d_cursor_toggle(VIEW3D_PT_view3d_cursor):
     """Turns Mouse Action on/off for placing 3D Cursor"""
        
-    
     def draw(self, context):
+        keymaps = context.window_manager.keyconfigs['Blender User'].keymaps['3D View'].keymap_items
+        cursor_key = keymaps['view3d.cursor3d'].active
+        
         
     
