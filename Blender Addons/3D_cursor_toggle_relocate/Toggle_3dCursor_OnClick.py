@@ -18,10 +18,10 @@
 #Copyright 2014 Ryan Sweeney
 
 bl_info = {
-    "name": "Cookie Rig UI",
+    "name": "3D Cursor LMB Toggle",
     "author": "Ryan Sweeney",
     "version": (1, 0),
-    "blender": (2, 71, 0),
+    "blender": (2, 72, 0),
     "location": "View3D > Properties Panel > 3D Cursor",
     "description": "Adds a toggle to the 3D Cursor in the properties tab.",
     "warning": "",
@@ -32,10 +32,22 @@ import bpy
 
 class VIEW3D_PT_view3d_cursor_toggle(VIEW3D_PT_view3d_cursor):
     """Turns Mouse Action on/off for placing 3D Cursor"""
-       
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_label = "3D Cursor"
+    
+    @classmethod
+    def poll(cls, context):
+        view = context.space_data
+        return (view is not None)
+    
     def draw(self, context):
-        keymaps = context.window_manager.keyconfigs['Blender User'].keymaps['3D View'].keymap_items
+        wm = context.window_manager
+        keymaps = wm.keyconfigs['Blender User'].keymaps['3D View'].keymap_items
         cursor_key = keymaps['view3d.cursor3d'].active
+        layout = self.layout
         
+        row = layout.row()
+        row.prop(keymaps, "view3d.cursor3d", text = "Toggle LMB")
         
     
