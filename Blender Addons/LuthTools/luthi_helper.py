@@ -1,15 +1,14 @@
 import bpy
-from math import pi, sqrt, cos, sin
+from math import sqrt
 
 FB_THICKNESS = 0.1875
-RULE_CONST   = 17.817
 
 def deselect_all(context):
     for o in context.scene.objects:
         o.select = False
         
 def fret_spacer(scale_length, fret_number):
-    return -(scale_length - (scale_length/(2**(fret_number / 12))))
+    return -(scale_length - (scale_length/(2**(fret_number / 12.0))))
 
 def float_range(start = 0.0, end = 1.0, step = 1.0):
     r = start
@@ -56,3 +55,18 @@ def build_mesh(context, mesh_name, object_name, verts, faces, translate=None):
         deselect_all(context)
         _object.select = True
         bpy.ops.transform.translate(value=translate)
+        
+def let_your_edge_bone_slide(fret_count):
+    """Just a test func. I have an idea about subdividing the fretboard"""
+    deselect_all(bpy.context)
+    bpy.data.objects['FretBoard'].select = True
+    bpy.context.scene.objects.active = bpy.data.objects['FretBoard']    
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.loopcut_slide(MESH_OT_loopcut={
+        "number_cuts":18,
+        "smoothness":0,
+        "falloff":'ROOT',
+        "edge_index":26,
+        "mesh_select_mode_init":(True, False, False)
+        }
+    )

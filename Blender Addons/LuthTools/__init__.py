@@ -17,14 +17,14 @@
 # ##### END GPL LICENSE BLOCK #####
 
 bl_info = {
-    "name": "Luthier Tool",
+    "name": "LuthiTools",
     "author": "Ryan Sweeney",
     "version": (0, 0),
     "blender": (2, 72, 0),
     "location": "View3D > Add > Mesh > FretBoard",
-    "description": "Adds a scaleable fretboard Mesh Object",
+    "description": "Adds a scaleable fretboard Mesh Object. More Guitar parts to come!",
     "warning": "Still a work in progress",
-    "wiki_url": "http://sweenist.wordpress.com",
+    "wiki_url": "http://sweenist.wordpress.com/2015/01/04/luthitools/",
     "category": "Add Mesh"
 }
 
@@ -46,10 +46,11 @@ class AddFretBoard(Operator):
     expand_fret = BoolProperty(default=True)
     expand_fretboard = BoolProperty(default=True)
     expand_fretboard_width = BoolProperty(default=True)
+    expand_fretboard_inlays = BoolProperty(default=True)
     
     fret_count = IntProperty(
         name = "Fret Count",
-        description = "The number of frets. Choose 0 for fretless",
+        description = "The number of frets. Still needs a value for fretless.",
         min = 0,
         max = 32,
         default = 22
@@ -70,6 +71,10 @@ class AddFretBoard(Operator):
         default = 12.00,
         precision = 3
     )    
+    isFretless = BoolProperty(
+        name = "",
+        description = "Emulates a fretless board if checked"        
+    )
     isFlat = BoolProperty(
         name = "Flatten",
         description = "Uncheck this to have a classical flat fretboard",
@@ -108,7 +113,7 @@ class AddFretBoard(Operator):
     fret_depth = FloatProperty(
         name = "Fret Depth",
         description = "Fret length from bottom to top in Y",
-        default = 0.125,
+        default = 0.100,
         min = 0.01,
         max = 1.00,
         precision = 3
@@ -116,14 +121,97 @@ class AddFretBoard(Operator):
     fret_height = FloatProperty(
         name = "Fret Height",
         description = "Fret height from fretboard toward string",
-        default = 0.02325,
+        default = 0.025,
         min = 0.005,
         max = 1.25,
         precision = 6
     )
     #Inlays
-    #add enum proprties
-    
+    inlay_1 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_none"
+    )
+    inlay_3 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_none"
+    )
+    inlay_5 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_one"
+    )
+    inlay_7 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_one"
+    )
+    inlay_9 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_none"
+    )
+    inlay_10 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_none"
+    )
+    inlay_12 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")                        
+            ],
+        default = "inlay_two"
+    )
+    inlay_15 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_one"
+    )
+    inlay_17 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_one"
+    )
+    inlay_19 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_none"
+    )
+    inlay_21 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_none"
+    )
+    inlay_24 = EnumProperty(
+        items= [("inlay_two", "2", ""),
+                ("inlay_one", "1", ""),
+                ("inlay_none", "-", "")
+            ],
+        default = "inlay_two"
+    )
+
     def draw(self, context):
         layout = self.layout
                 
@@ -136,6 +224,11 @@ class AddFretBoard(Operator):
                 icon_only=True,emboss=False
                 )
         if self.expand_fret:
+            row = box.row(align=True)
+            row.alignment = 'LEFT'
+            row.label("Fretless:")
+            row.prop(self, 'isFretless', text = "")
+            
             row = box.row()
             row.label(text="Fret Count:")
             row.prop(self, 'fret_count', text="")
@@ -194,6 +287,64 @@ class AddFretBoard(Operator):
                 row = box.row()
                 row.label(text="Bridge Width:")
                 row.prop(self, 'bridge_width', text="")
+        #Inlays Box
+        box = layout.box()
+        row = box.row(align=True)
+        row.alignment = "LEFT"
+        row.prop(self, 'expand_fretboard_inlays', text="Fretboard Inlays",
+                icon="TRIA_DOWN" if self.expand_fretboard_inlays else "TRIA_RIGHT",
+                icon_only=True, emboss=False
+                )
+        if self.expand_fretboard_inlays and self.fret_count > 0:
+            if self.fret_count > 0:
+                row = box.row(align=True)
+                row.label(text="1st Fret Inlay:")
+                row.alignment='RIGHT'
+                row.prop(self, 'inlay_1', expand=True)
+            if self.fret_count > 2:
+                row = box.row(align=True)
+                row.label(text="3rd Fret Inlay:")
+                row.prop(self, 'inlay_3', expand=True)
+            if self.fret_count > 4:
+                row = box.row(align=True)
+                row.label(text="5th Fret Inlay:")
+                row.prop(self, 'inlay_5', expand=True)
+            if self.fret_count > 6:
+                row = box.row(align=True)
+                row.label(text="7th Fret Inlay:")
+                row.prop(self, 'inlay_7', expand=True)
+            if self.fret_count > 8:
+                row = box.row(align=True)
+                row.label(text="9th Fret Inlay:")
+                row.prop(self, 'inlay_9', expand=True)
+            if self.fret_count > 9:
+                row = box.row()
+                row.label(text="10th Fret Inlay:")
+                row.prop(self, 'inlay_10', text="")
+            if self.fret_count > 11:
+                row = box.row()
+                row.label(text="12th Fret Inlay:")
+                row.prop(self, 'inlay_12', text="")
+            if self.fret_count > 14:
+                row = box.row()
+                row.label(text="15th Fret Inlay:")
+                row.prop(self, 'inlay_15', text="")
+            if self.fret_count > 16:
+                row = box.row()
+                row.label(text="17th Fret Inlay:")
+                row.prop(self, 'inlay_17', text="")
+            if self.fret_count > 18:
+                row = box.row()
+                row.label(text="19th Fret Inlay:")
+                row.prop(self, 'inlay_19', expand=True)
+            if self.fret_count > 20:
+                row = box.row()
+                row.label(text="21th Fret Inlay:")
+                row.prop(self, 'inlay_21', expand=True)
+            if self.fret_count > 23:
+                row = box.row()
+                row.label(text="24th Fret Inlay:")
+                row.prop(self, 'inlay_24', text="")
                         
     def execute(self, context):        
         #Build the Nut Object
@@ -210,22 +361,25 @@ class AddFretBoard(Operator):
         else:
             fb_v, fb_f = add_fret_board(self.fret_count, self.scale_length, self.nut_width, self.fb_bottom_width, curve_radius = self.fret_radius, overhang = self.fb_overhang)
         helper.build_mesh(context, "FB_mesh", "FretBoard", fb_v, fb_f)        
-
+        #edge loops adde to fretboard?
+        #helper.let_your_edge_bone_slide(self.fret_count)
+        
         #Build the frets
-        for i in range(1, self.fret_count + 1):
-            if self.fb_overhang:
-                max_fb_y = helper.fret_spacer(self.scale_length, self.fret_count + 1)
-            else:
-                max_fb_y = helper.fret_spacer(self.scale_length, self.fret_count)
-            #determine some important widths and lengths for following tasks    
-            fret_y_pos = helper.fret_spacer(self.scale_length, i)
-            fret_width = helper.get_fret_width(self.nut_width, self.fb_bottom_width, max_fb_y, fret_y_pos)
-            #Make the mesh!
-            if not self.isFlat:
-                f_v, f_f = add_fret(fret_width, self.fret_depth, self.fret_height, self.fret_radius)
-            else:
-                f_v, f_f = add_fret(fret_width, self.fret_depth, self.fret_height)
-            helper.build_mesh(context, "fret_mesh_" + str(i), "Fret_" + str(i), f_v, f_f, (0.0, fret_y_pos, helper.FB_THICKNESS))
+        if not self.isFretless:
+            for i in range(1, self.fret_count + 1):
+                if self.fb_overhang:
+                    max_fb_y = helper.fret_spacer(self.scale_length, self.fret_count + 1)
+                else:
+                    max_fb_y = helper.fret_spacer(self.scale_length, self.fret_count)
+                #determine some important widths and lengths for following tasks    
+                fret_y_pos = helper.fret_spacer(self.scale_length, i)
+                fret_width = helper.get_fret_width(self.nut_width, self.fb_bottom_width, max_fb_y, fret_y_pos)
+                #Make the mesh!
+                if not self.isFlat:
+                    f_v, f_f = add_fret(fret_width, self.fret_depth, self.fret_height, self.fret_radius)
+                else:
+                    f_v, f_f = add_fret(fret_width, self.fret_depth, self.fret_height)
+                helper.build_mesh(context, "fret_mesh_" + str(i), "Fret_" + str(i), f_v, f_f, (0.0, fret_y_pos, helper.FB_THICKNESS))
             
         return {'FINISHED'}
     
