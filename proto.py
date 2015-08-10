@@ -138,6 +138,12 @@ class BlendCharts_OT_AddSample(Operator):
         print("invoked")
         print(event.value)
         return {'FINISHED'}
+    
+    def model(self):
+        verts = []
+        faces = []
+        
+        
 
 class BlendCharts_OT_ClearSamples(Operator):
     bl_idname = "wm.blendcharts_clear_samples"
